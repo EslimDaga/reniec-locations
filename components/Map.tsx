@@ -70,7 +70,6 @@ export default function Map({
         clusterRadius: 50,
       });
 
-      // Update cluster styles
       map.addLayer({
         id: "clusters",
         type: "circle",
@@ -83,7 +82,6 @@ export default function Map({
         },
       });
 
-      // Update cluster count styles
       map.addLayer({
         id: "cluster-count",
         type: "symbol",
@@ -99,7 +97,6 @@ export default function Map({
         },
       });
 
-      // Update individual markers
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
@@ -110,21 +107,21 @@ export default function Map({
           "circle-radius": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            8, // hover size
-            4, // default size (smaller)
+            8,
+            4,
           ],
           "circle-stroke-width": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            2, // hover stroke
-            0, // no stroke by default
+            2,
+            0,
           ],
           "circle-stroke-color": "#ffffff",
           "circle-opacity": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            1, // full opacity on hover
-            0.75, // slight transparency by default
+            1,
+            0.75,
           ],
         },
       });
@@ -162,7 +159,6 @@ export default function Map({
         map.getCanvas().style.cursor = "";
       });
 
-      // Update the click handler for unclustered points
       map.on("click", "unclustered-point", (e) => {
         const coordinates = (
           e.features?.[0].geometry as GeoJSON.Point
@@ -170,7 +166,6 @@ export default function Map({
 
         if (!coordinates) return;
 
-        // Add smooth transition to clicked marker
         map.flyTo({
           center: coordinates,
           zoom: 15,
@@ -179,7 +174,6 @@ export default function Map({
         });
       });
 
-      // Add hover effect for unclustered points
       let hoveredStateId: string | null = null;
 
       map.on("mouseenter", "unclustered-point", (e) => {
