@@ -21,3 +21,49 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.mapboxgl-popup {
+  @apply z-[1000];
+}
+
+.mapboxgl-popup-tip {
+  display: none;
+}
+
+.modern-popup {
+  @apply transition-all duration-200;
+}
+
+.modern-popup .mapboxgl-popup-content {
+  @apply p-0 rounded-lg border border-zinc-200/50;
+  @apply shadow-lg shadow-zinc-800/5 bg-white/95 backdrop-blur-sm;
+  animation: simpleFadeIn 0.2s ease-out forwards;
+}
+
+.modern-popup .mapboxgl-popup-tip {
+  @apply border-t-white/95;
+  animation: simpleFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes simpleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mapboxgl-marker {
+  @apply transition-transform duration-200;
+}
+
+.mapboxgl-marker:hover {
+  @apply -translate-y-1;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  @apply -mb-2 border-t-white/95;
+}
