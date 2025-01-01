@@ -162,42 +162,21 @@ export default function Map({
         map.getCanvas().style.cursor = "";
       });
 
+      // Update the click handler for unclustered points
       map.on("click", "unclustered-point", (e) => {
         const coordinates = (
           e.features?.[0].geometry as GeoJSON.Point
         ).coordinates.slice() as [number, number];
-        const properties = e.features?.[0].properties;
 
-        if (!properties) return;
+        if (!coordinates) return;
 
-        new mapboxgl.Popup({
-          offset: [0, -15],
-          className: "modern-popup",
-          maxWidth: "280px",
-          closeButton: false,
-          closeOnClick: true,
-          focusAfterOpen: false,
-          anchor: "bottom",
-        })
-          .setLngLat(coordinates)
-          .setHTML(
-            `
-          <div class="p-3">
-            <div class="flex flex-col gap-1.5">
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
-                <h3 class="font-medium tracking-tight text-zinc-900 text-sm">
-                  ${properties.serviceCenter}
-                </h3>
-              </div>
-              <p class="text-xs text-zinc-600 pl-3.5">
-                ${properties.streetName}
-              </p>
-            </div>
-          </div>
-        `
-          )
-          .addTo(map);
+        // Add smooth transition to clicked marker
+        map.flyTo({
+          center: coordinates,
+          zoom: 15,
+          duration: 1500,
+          essential: true,
+        });
       });
 
       // Add hover effect for unclustered points
