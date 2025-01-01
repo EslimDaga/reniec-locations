@@ -70,18 +70,20 @@ export default function Map({
         clusterRadius: 50,
       });
 
+      // Update cluster styles
       map.addLayer({
         id: "clusters",
         type: "circle",
         source: "locations",
         filter: ["has", "point_count"],
         paint: {
-          "circle-color": "#622b4b",
-          "circle-opacity": 0.75,
-          "circle-radius": ["step", ["get", "point_count"], 20, 10, 30, 20, 40],
+          "circle-color": "#000000",
+          "circle-opacity": 0.8,
+          "circle-radius": ["step", ["get", "point_count"], 16, 10, 24, 20, 32],
         },
       });
 
+      // Update cluster count styles
       map.addLayer({
         id: "cluster-count",
         type: "symbol",
@@ -89,35 +91,41 @@ export default function Map({
         filter: ["has", "point_count"],
         layout: {
           "text-field": "{point_count_abbreviated}",
-          "text-size": 12,
+          "text-size": 11,
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
         },
         paint: {
           "text-color": "#ffffff",
         },
       });
 
+      // Update individual markers
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
         source: "locations",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#622b4b",
+          "circle-color": "#000000",
           "circle-radius": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            12, // hover size
-            8, // default size
+            8, // hover size
+            4, // default size (smaller)
           ],
           "circle-stroke-width": [
             "case",
             ["boolean", ["feature-state", "hover"], false],
-            3, // hover stroke
-            2, // default stroke
+            2, // hover stroke
+            0, // no stroke by default
           ],
-          "circle-stroke-color": "#fff",
-          "circle-opacity": 1,
-          "circle-stroke-opacity": 1,
+          "circle-stroke-color": "#ffffff",
+          "circle-opacity": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            1, // full opacity on hover
+            0.75, // slight transparency by default
+          ],
         },
       });
 
@@ -174,15 +182,15 @@ export default function Map({
           .setLngLat(coordinates)
           .setHTML(
             `
-          <div class="p-4">
-            <div class="flex flex-col gap-2">
+          <div class="p-3">
+            <div class="flex flex-col gap-1.5">
               <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#622b4b]"></div>
-                <h3 class="font-medium tracking-tight text-zinc-900">
+                <div class="w-1.5 h-1.5 rounded-full bg-black"></div>
+                <h3 class="font-medium tracking-tight text-zinc-900 text-sm">
                   ${properties.serviceCenter}
                 </h3>
               </div>
-              <p class="text-sm text-zinc-600 pl-4">
+              <p class="text-xs text-zinc-600 pl-3.5">
                 ${properties.streetName}
               </p>
             </div>
