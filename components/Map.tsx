@@ -10,10 +10,27 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
 interface Location {
   id: string;
+  regionalOffices: string;
+  department: string;
+  province: string;
+  district: string;
+  serviceCenter: string;
+  sioCode: string;
+  localTypeAbbreviation: string;
+  status: string;
+  publicServiceHours: string;
+  takesPhoto: string;
+  deliversElectronicDNI: string;
+  dniMajorProcedure: string;
+  dniDeliveries: string;
+  civilRecordsRegistration: string;
+  civilRecordsCertification: string;
+  ruipnCertification: string;
+  erep: string;
+  streetName: string;
   latitude: number;
   longitude: number;
-  serviceCenter: string;
-  streetName: string;
+  geocoded_at: string;
 }
 
 interface MapProps {
@@ -60,8 +77,27 @@ export default function Map({
             },
             properties: {
               id: location.id,
+              regionalOffices: location.regionalOffices,
+              department: location.department,
+              province: location.province,
+              district: location.district,
               serviceCenter: location.serviceCenter,
+              sioCode: location.sioCode,
+              localTypeAbbreviation: location.localTypeAbbreviation,
+              status: location.status,
+              publicServiceHours: location.publicServiceHours,
+              takesPhoto: location.takesPhoto,
+              deliversElectronicDNI: location.deliversElectronicDNI,
+              dniMajorProcedure: location.dniMajorProcedure,
+              dniDeliveries: location.dniDeliveries,
+              civilRecordsRegistration: location.civilRecordsRegistration,
+              civilRecordsCertification: location.civilRecordsCertification,
+              ruipnCertification: location.ruipnCertification,
+              erep: location.erep,
               streetName: location.streetName,
+              latitude: location.latitude,
+              longitude: location.longitude,
+              geocoded_at: location.geocoded_at,
             },
           })),
         },
