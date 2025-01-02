@@ -4,6 +4,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import LocationCard from "./LocationCard";
 import mapboxgl from "mapbox-gl";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
@@ -48,6 +49,9 @@ export default function Map({
   const map = useRef<mapboxgl.Map | null>(null);
   const userLocationMarker = useRef<mapboxgl.Marker | null>(null);
   const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -200,7 +204,15 @@ export default function Map({
           e.features?.[0].geometry as GeoJSON.Point
         ).coordinates.slice() as [number, number];
 
-        if (!coordinates) return;
+        if (!coordinates || !e.features?.[0].properties) return;
+
+        const location = locations.find(
+          (loc) => loc.id === e.features?.[0].properties?.id
+        );
+
+        if (location) {
+          setSelectedLocation(location);
+        }
 
         map.flyTo({
           center: coordinates,
@@ -322,5 +334,10 @@ export default function Map({
     initializeClusters,
   ]);
 
-  return <div ref={mapContainer} className={`h-screen w-full ${className}`} />;
+  return (
+    <div className="relative h-screen w-full">
+      <div ref={mapContainer} className={`h-full w-full ${className}`} />
+      <LocationCard location={selectedLocation} />
+    </div>
+  );
 }
