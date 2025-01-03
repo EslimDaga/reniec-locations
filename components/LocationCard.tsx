@@ -59,7 +59,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
 
   return (
     // Main card container
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[480px] h-[46vh] bg-white/95 rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 animate-slide-up flex flex-col">
+    <div className="fixed bottom-3 left-1/2 -translate-x-1/2 w-[480px] h-[46vh] bg-white/95 rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 animate-slide-up flex flex-col">
       {/* Header */}
       <div className="flex-none sticky top-0 bg-white/95 backdrop-blur-md border-b border-zinc-100/50 flex items-center justify-between p-4">
         <div className="flex items-center gap-3 justify-between w-full">
