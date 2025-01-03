@@ -58,9 +58,10 @@ const LocationCard = ({ location }: LocationCardProps) => {
   }
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[480px] max-h-[45vh] bg-white/95 rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 animate-slide-up">
+    // Main card container
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[480px] h-[46vh] bg-white/95 rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 animate-slide-up flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-zinc-100/50 flex items-center justify-between p-4">
+      <div className="flex-none sticky top-0 bg-white/95 backdrop-blur-md border-b border-zinc-100/50 flex items-center justify-between p-4">
         <div className="flex items-center gap-3 justify-between w-full">
           <div className="flex gap-2 items-center">
             <div className="p-2 bg-zinc-100 rounded-xl flex-none">
@@ -90,8 +91,20 @@ const LocationCard = ({ location }: LocationCardProps) => {
         </div>
       </div>
 
-      {/* Card Body - Adjusted padding and max-height */}
-      <div className="p-4 pb-16 overflow-y-auto max-h-[calc(46vh-4rem)]">
+      {/* Card Body - Updated to flex-grow */}
+      <div
+        className="flex-1 overflow-y-auto min-h-0 p-4 scroll-smooth
+        scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent hover:scrollbar-thumb-zinc-400
+        scrollbar-thumb-rounded-full scrollbar-track-rounded-full
+        [&::-webkit-scrollbar]:w-2
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-thumb]:bg-zinc-300/50
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:border-4
+        [&::-webkit-scrollbar-thumb]:border-transparent
+        [&::-webkit-scrollbar-thumb]:bg-clip-padding
+        [&::-webkit-scrollbar-thumb]:hover:bg-zinc-400/50"
+      >
         {/* Location Section */}
         <div className="flex flex-col space-y-2 px-3 py-2 bg-zinc-50/50 rounded-xl mb-4">
           <p className="flex items-center gap-2 text-sm text-zinc-700">
@@ -140,11 +153,11 @@ const LocationCard = ({ location }: LocationCardProps) => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-2 gap-3">
           {/* DNI Services */}
           <div className="p-3 rounded-2xl border border-zinc-100 bg-white">
             <div className="flex items-center gap-2 mb-2">
-              <IdCard className="w-4 h-4 text-zinc-800" />
+              <IdCard className="w-4 h-4 text-zinc-500" />
               <h4 className="text-sm font-medium text-zinc-800">
                 Servicios DNI
               </h4>
@@ -176,7 +189,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
           {/* Civil Records */}
           <div className="p-3 rounded-2xl border border-zinc-100 bg-white">
             <div className="flex items-center gap-2 mb-2">
-              <FileText className="w-4 h-4 text-zinc-800" />
+              <FileText className="w-4 h-4 text-zinc-500" />
               <h4 className="text-sm font-medium text-zinc-800">
                 Registros Civiles
               </h4>
@@ -207,8 +220,8 @@ const LocationCard = ({ location }: LocationCardProps) => {
         </div>
       </div>
 
-      {/* Fixed Footer */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-zinc-100">
+      {/* Footer - Updated to flex-none */}
+      <div className="flex-none bg-white/95 backdrop-blur-md border-t border-zinc-100">
         <a
           href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`}
           target="_blank"
