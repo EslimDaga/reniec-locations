@@ -59,7 +59,9 @@ const LocationCard = ({ location }: LocationCardProps) => {
           </div>
 
           <div className="mt-4 sm:mt-6 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
-            <span className="w-1.5 h-1.5 bg-zinc-200 rounded-full animate-pulse" />
+            <div className="relative flex">
+              <span className="relative w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+            </div>
             Haz clic en cualquier marcador
           </div>
         </div>
