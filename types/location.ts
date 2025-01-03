@@ -22,3 +22,7 @@ export interface Location {
   longitude: number;
   geocoded_at: string;
 }
+
+export interface LocationCardProps {
+  location: Location | null;
+}
