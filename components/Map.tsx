@@ -10,7 +10,7 @@ import mapboxgl from "mapbox-gl";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 const PERU_CENTER: [number, number] = [-74.0465, -9.19];
-const INITIAL_ZOOM = 3;
+const INITIAL_ZOOM = 2.4;
 
 interface MapProps {
   className?: string;
@@ -263,6 +263,14 @@ export default function Map({
     const mapInstance = map.current;
 
     mapInstance.on("load", () => {
+      mapInstance.setFog({
+        color: "rgb(255, 255, 255)",
+        "high-color": "rgb(220, 235, 255)",
+        "horizon-blend": 0.015,
+        "space-color": "rgb(0, 0, 0)",
+        "star-intensity": 0.85,
+      });
+
       initializeMarkers(mapInstance, locations);
     });
 
