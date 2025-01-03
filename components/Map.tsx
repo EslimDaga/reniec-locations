@@ -305,7 +305,10 @@ export default function Map({
 
   return (
     <div className="relative h-screen w-full">
-      <div ref={mapContainer} className={`h-full w-full ${className}`} />
+      <div
+        ref={mapContainer}
+        className={`h-full w-full pb-[35dvh] sm:pb-0 ${className}`}
+      />
       <LocationCard location={selectedLocation} />
     </div>
   );
