@@ -178,7 +178,7 @@ export default function Map({
           setSelectedLocation(location);
           map.flyTo({
             center: [location.longitude, location.latitude],
-            zoom: 15,
+            zoom: 13,
             duration: 1500,
           });
         }
