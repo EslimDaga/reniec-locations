@@ -266,7 +266,7 @@ export default function Map({
       mapInstance.setFog({
         color: "rgb(255, 255, 255)",
         "high-color": "rgb(220, 235, 255)",
-        "horizon-blend": 0.015,
+        "horizon-blend": 0.055,
         "space-color": "rgb(0, 0, 0)",
         "star-intensity": 0.85,
       });
