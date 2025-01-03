@@ -4,35 +4,13 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { Location } from "@/types/location";
 import LocationCard from "./LocationCard";
 import mapboxgl from "mapbox-gl";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
-
-interface Location {
-  id: string;
-  regionalOffices: string;
-  department: string;
-  province: string;
-  district: string;
-  serviceCenter: string;
-  sioCode: string;
-  localTypeAbbreviation: string;
-  status: string;
-  publicServiceHours: string;
-  takesPhoto: string;
-  deliversElectronicDNI: string;
-  dniMajorProcedure: string;
-  dniDeliveries: string;
-  civilRecordsRegistration: string;
-  civilRecordsCertification: string;
-  ruipnCertification: string;
-  erep: string;
-  streetName: string;
-  latitude: number;
-  longitude: number;
-  geocoded_at: string;
-}
+const PERU_CENTER: [number, number] = [-74.0465, -9.19];
+const INITIAL_ZOOM = 3;
 
 interface MapProps {
   className?: string;
@@ -42,8 +20,8 @@ interface MapProps {
 
 export default function Map({
   className = "",
-  initialCoordinates = [-74.006, 40.7128],
-  zoom = 12,
+  initialCoordinates = PERU_CENTER,
+  zoom = INITIAL_ZOOM,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -67,7 +45,7 @@ export default function Map({
     fetchLocations();
   }, []);
 
-  const initializeClusters = useCallback(
+  const initializeMarkers = useCallback(
     (map: mapboxgl.Map, locations: Location[]) => {
       map.addSource("locations", {
         type: "geojson",
@@ -83,43 +61,12 @@ export default function Map({
             properties: { ...location },
           })),
         },
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50,
       });
 
       map.addLayer({
-        id: "clusters",
+        id: "location-points-base",
         type: "circle",
         source: "locations",
-        filter: ["has", "point_count"],
-        paint: {
-          "circle-color": "#000000",
-          "circle-opacity": 0.8,
-          "circle-radius": ["step", ["get", "point_count"], 16, 10, 24, 20, 32],
-        },
-      });
-
-      map.addLayer({
-        id: "cluster-count",
-        type: "symbol",
-        source: "locations",
-        filter: ["has", "point_count"],
-        layout: {
-          "text-field": "{point_count_abbreviated}",
-          "text-size": 11,
-          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-        },
-        paint: {
-          "text-color": "#ffffff",
-        },
-      });
-
-      map.addLayer({
-        id: "unclustered-point-base",
-        type: "circle",
-        source: "locations",
-        filter: ["!", ["has", "point_count"]],
         paint: {
           "circle-color": [
             "case",
@@ -141,52 +88,48 @@ export default function Map({
         },
       });
 
-      map.addLayer(
-        {
-          id: "unclustered-point-radius",
-          type: "circle",
-          source: "locations",
-          filter: ["!", ["has", "point_count"]],
-          paint: {
-            "circle-radius": 20,
-            "circle-color": [
-              "case",
-              ["boolean", ["feature-state", "selected"], false],
-              "#10b981",
-              "#000000",
-            ],
-            "circle-opacity": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              0.15,
-              ["boolean", ["feature-state", "selected"], false],
-              0.1,
-              0,
-            ],
-            "circle-stroke-width": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              1,
-              ["boolean", ["feature-state", "selected"], false],
-              1,
-              0,
-            ],
-            "circle-stroke-color": [
-              "case",
-              ["boolean", ["feature-state", "selected"], false],
-              "#059669",
-              "#9ca3af",
-            ],
-            "circle-stroke-opacity": 0.5,
-          },
+      map.addLayer({
+        id: "location-points-radius",
+        type: "circle",
+        source: "locations",
+        paint: {
+          "circle-radius": 20,
+          "circle-color": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            "#10b981",
+            "#000000",
+          ],
+          "circle-opacity": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            0.15,
+            ["boolean", ["feature-state", "selected"], false],
+            0.1,
+            0,
+          ],
+          "circle-stroke-width": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            1,
+            ["boolean", ["feature-state", "selected"], false],
+            1,
+            0,
+          ],
+          "circle-stroke-color": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            "#059669",
+            "#9ca3af",
+          ],
+          "circle-stroke-opacity": 0.5,
         },
-        "unclustered-point-base"
-      );
+      });
 
       let hoveredStateId: string | null = null;
       let selectedStateId: string | null = null;
 
-      map.on("mousemove", "unclustered-point-base", (e) => {
+      map.on("mousemove", "location-points-base", (e) => {
         if (e.features?.length && e.features[0].id) {
           if (hoveredStateId) {
             map.setFeatureState(
@@ -203,7 +146,7 @@ export default function Map({
         }
       });
 
-      map.on("mouseleave", "unclustered-point-base", () => {
+      map.on("mouseleave", "location-points-base", () => {
         if (hoveredStateId) {
           map.setFeatureState(
             { source: "locations", id: hoveredStateId },
@@ -214,7 +157,7 @@ export default function Map({
         }
       });
 
-      map.on("click", "unclustered-point-base", (e) => {
+      map.on("click", "location-points-base", (e) => {
         if (e.features?.length) {
           const location = e.features[0].properties as Location;
           const clickedId = e.features[0].id as string;
@@ -305,15 +248,22 @@ export default function Map({
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/light-v11",
-      center: initialCoordinates,
-      zoom: zoom,
+      center: PERU_CENTER,
+      zoom: INITIAL_ZOOM,
       attributionControl: false,
+      maxBounds: [
+        [-180, -85],
+        [180, 85],
+      ],
+      minZoom: 2,
+      maxZoom: 18,
+      projection: "globe",
     });
 
     const mapInstance = map.current;
 
     mapInstance.on("load", () => {
-      initializeClusters(mapInstance, locations);
+      initializeMarkers(mapInstance, locations);
     });
 
     if ("geolocation" in navigator) {
@@ -328,7 +278,7 @@ export default function Map({
     zoom,
     handleLocationFound,
     locations,
-    initializeClusters,
+    initializeMarkers,
   ]);
 
   return (
