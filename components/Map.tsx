@@ -75,34 +75,12 @@ export default function Map({
           type: "FeatureCollection",
           features: locations.map((location) => ({
             type: "Feature",
+            id: location.id,
             geometry: {
               type: "Point",
               coordinates: [location.longitude, location.latitude],
             },
-            properties: {
-              id: location.id,
-              regionalOffices: location.regionalOffices,
-              department: location.department,
-              province: location.province,
-              district: location.district,
-              serviceCenter: location.serviceCenter,
-              sioCode: location.sioCode,
-              localTypeAbbreviation: location.localTypeAbbreviation,
-              status: location.status,
-              publicServiceHours: location.publicServiceHours,
-              takesPhoto: location.takesPhoto,
-              deliversElectronicDNI: location.deliversElectronicDNI,
-              dniMajorProcedure: location.dniMajorProcedure,
-              dniDeliveries: location.dniDeliveries,
-              civilRecordsRegistration: location.civilRecordsRegistration,
-              civilRecordsCertification: location.civilRecordsCertification,
-              ruipnCertification: location.ruipnCertification,
-              erep: location.erep,
-              streetName: location.streetName,
-              latitude: location.latitude,
-              longitude: location.longitude,
-              geocoded_at: location.geocoded_at,
-            },
+            properties: { ...location },
           })),
         },
         cluster: true,
@@ -138,96 +116,78 @@ export default function Map({
       });
 
       map.addLayer({
-        id: "unclustered-point",
+        id: "unclustered-point-base",
         type: "circle",
         source: "locations",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#000000",
-          "circle-radius": [
+          "circle-color": [
             "case",
-            ["boolean", ["feature-state", "hover"], false],
-            8,
-            4,
+            ["boolean", ["feature-state", "selected"], false],
+            "#10b981",
+            "#000000",
           ],
-          "circle-stroke-width": [
-            "case",
-            ["boolean", ["feature-state", "hover"], false],
-            2,
-            0,
-          ],
-          "circle-stroke-color": "#ffffff",
+          "circle-radius": 3.5,
           "circle-opacity": [
             "case",
-            ["boolean", ["feature-state", "hover"], false],
+            [
+              "any",
+              ["boolean", ["feature-state", "hover"], false],
+              ["boolean", ["feature-state", "selected"], false],
+            ],
             1,
             0.75,
           ],
         },
       });
 
-      map.on("click", "clusters", (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: ["clusters"],
-        });
-        const clusterId = features[0].properties?.cluster_id;
-        const source = map.getSource("locations") as mapboxgl.GeoJSONSource;
-
-        source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (
-            err ||
-            !features[0].geometry.type.includes("Point") ||
-            zoom === null
-          )
-            return;
-
-          const coordinates = (features[0].geometry as GeoJSON.Point)
-            .coordinates as [number, number];
-
-          map.easeTo({
-            center: coordinates,
-            zoom: zoom,
-          });
-        });
-      });
-
-      map.on("mouseenter", "clusters", () => {
-        map.getCanvas().style.cursor = "pointer";
-      });
-
-      map.on("mouseleave", "clusters", () => {
-        map.getCanvas().style.cursor = "";
-      });
-
-      map.on("click", "unclustered-point", (e) => {
-        const coordinates = (
-          e.features?.[0].geometry as GeoJSON.Point
-        ).coordinates.slice() as [number, number];
-
-        if (!coordinates || !e.features?.[0].properties) return;
-
-        const location = locations.find(
-          (loc) => loc.id === e.features?.[0].properties?.id
-        );
-
-        if (location) {
-          setSelectedLocation(location);
-        }
-
-        map.flyTo({
-          center: coordinates,
-          zoom: 15,
-          duration: 1500,
-          essential: true,
-        });
-      });
+      map.addLayer(
+        {
+          id: "unclustered-point-radius",
+          type: "circle",
+          source: "locations",
+          filter: ["!", ["has", "point_count"]],
+          paint: {
+            "circle-radius": 20,
+            "circle-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#10b981",
+              "#000000",
+            ],
+            "circle-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              0.15,
+              ["boolean", ["feature-state", "selected"], false],
+              0.1,
+              0,
+            ],
+            "circle-stroke-width": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              1,
+              ["boolean", ["feature-state", "selected"], false],
+              1,
+              0,
+            ],
+            "circle-stroke-color": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              "#059669",
+              "#9ca3af",
+            ],
+            "circle-stroke-opacity": 0.5,
+          },
+        },
+        "unclustered-point-base"
+      );
 
       let hoveredStateId: string | null = null;
+      let selectedStateId: string | null = null;
 
-      map.on("mouseenter", "unclustered-point", (e) => {
-        map.getCanvas().style.cursor = "pointer";
-
-        if (e.features && e.features[0].id) {
+      map.on("mousemove", "unclustered-point-base", (e) => {
+        if (e.features?.length && e.features[0].id) {
           if (hoveredStateId) {
             map.setFeatureState(
               { source: "locations", id: hoveredStateId },
@@ -239,21 +199,58 @@ export default function Map({
             { source: "locations", id: hoveredStateId },
             { hover: true }
           );
+          map.getCanvas().style.cursor = "pointer";
         }
       });
 
-      map.on("mouseleave", "unclustered-point", () => {
-        map.getCanvas().style.cursor = "";
+      map.on("mouseleave", "unclustered-point-base", () => {
         if (hoveredStateId) {
           map.setFeatureState(
             { source: "locations", id: hoveredStateId },
             { hover: false }
           );
+          hoveredStateId = null;
+          map.getCanvas().style.cursor = "";
         }
-        hoveredStateId = null;
       });
+
+      map.on("click", "unclustered-point-base", (e) => {
+        if (e.features?.length) {
+          const location = e.features[0].properties as Location;
+          const clickedId = e.features[0].id as string;
+
+          if (selectedStateId) {
+            map.setFeatureState(
+              { source: "locations", id: selectedStateId },
+              { selected: false }
+            );
+          }
+
+          selectedStateId = clickedId;
+          map.setFeatureState(
+            { source: "locations", id: selectedStateId },
+            { selected: true }
+          );
+
+          setSelectedLocation(location);
+          map.flyTo({
+            center: [location.longitude, location.latitude],
+            zoom: 15,
+            duration: 1500,
+          });
+        }
+      });
+
+      return () => {
+        if (selectedStateId) {
+          map.setFeatureState(
+            { source: "locations", id: selectedStateId },
+            { selected: false }
+          );
+        }
+      };
     },
-    []
+    [setSelectedLocation]
   );
 
   const createCustomMarker = useCallback((coordinates: [number, number]) => {
