@@ -25,88 +25,106 @@ const toSentenceCase = (str: string): string => {
 const LocationCard = ({ location }: LocationCardProps) => {
   if (!location) {
     return (
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[420px] bg-white/90 rounded-3xl shadow-lg border border-zinc-100/30 backdrop-blur-xl overflow-hidden z-50 animate-float">
-        <div className="px-6 py-8 text-center">
-          <div className="relative mb-6">
-            {/* Gradient orb effect */}
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-32 h-32 bg-gradient-to-r from-orange-200/40 to-rose-200/40 rounded-full blur-2xl" />
-
-            {/* Icon container with hover effect */}
-            <div className="relative mx-auto w-14 h-14 bg-gradient-to-b from-orange-50 to-orange-100/50 rounded-2xl flex items-center justify-center transform transition-all duration-300 hover:scale-105 hover:rotate-3">
-              <MapPin className="w-7 h-7 text-orange-500/90" />
+      <aside
+        className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[min(420px,90vw)]
+        bg-white/90 rounded-3xl shadow-lg border border-zinc-100/30
+        backdrop-blur-xl overflow-hidden z-50 animate-float"
+        role="complementary"
+        aria-label="Location selector"
+      >
+        <div className="px-4 sm:px-6 py-6 sm:py-8 text-center">
+          <div className="relative mb-4 sm:mb-6">
+            <div
+              className="absolute -top-2 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-24 sm:h-32
+              bg-gradient-to-r from-orange-200/40 to-rose-200/40 rounded-full blur-2xl"
+            />
+            <div
+              className="relative mx-auto w-12 sm:w-14 h-12 sm:h-14
+              bg-gradient-to-b from-orange-50 to-orange-100/50 rounded-2xl
+              flex items-center justify-center transform transition-all duration-300
+              hover:scale-105 hover:rotate-3"
+            >
+              <MapPin className="w-6 sm:w-7 h-6 sm:h-7 text-orange-500/90" />
             </div>
           </div>
 
-          <div className="space-y-2.5">
-            <h3 className="text-lg font-medium text-zinc-800">
+          <div className="space-y-2">
+            <h2 className="text-base sm:text-lg font-medium text-zinc-800">
               Selecciona una Oficina 🏢
-            </h3>
-            <p className="text-sm text-zinc-500/90 max-w-[280px] mx-auto leading-relaxed">
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500/90 max-w-[280px] mx-auto leading-relaxed">
               Explora el mapa para encontrar la oficina más cercana a tu
               ubicación
             </p>
           </div>
 
-          {/* Subtle interaction hint */}
-          <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
+          <div className="mt-4 sm:mt-6 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
             <span className="w-1.5 h-1.5 bg-zinc-200 rounded-full animate-pulse" />
             Haz clic en cualquier marcador
           </div>
         </div>
-      </div>
+      </aside>
     );
   }
 
   return (
-    // Main card container
-    <div className="fixed bottom-3 left-1/2 -translate-x-1/2 w-[480px] h-[46vh] bg-white/95 rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 animate-slide-up flex flex-col">
-      {/* Header */}
-      <div className="flex-none sticky top-0 bg-white/95 backdrop-blur-md border-b border-zinc-100/50 flex items-center justify-between p-4">
-        <div className="flex items-center gap-3 justify-between w-full">
+    <aside
+      className={`
+        fixed sm:bottom-4 left-1/2 -translate-x-1/2
+        w-full sm:w-[min(480px,90vw)]
+        max-h-[15dvh] sm:max-h-[45vh] min-h-[40dvh] sm:min-h-0
+        bg-white/95 rounded-t-2xl sm:rounded-3xl
+        shadow-2xl border border-zinc-200/50 backdrop-blur-md
+        overflow-hidden z-50 flex flex-col
+        transition-all duration-300 ease-out
+        ${
+          location
+            ? "translate-y-0 bottom-0"
+            : "translate-y-full bottom-[-200px]"
+        }
+      `}
+      role="complementary"
+      aria-label="Location details"
+    >
+      <header
+        className="flex-none sticky top-0 bg-white/95 backdrop-blur-md
+        border-b border-zinc-100/50 flex items-center justify-between p-3 sm:p-4"
+      >
+        <div className="flex items-center gap-2 sm:gap-3 justify-between w-full">
           <div className="flex gap-2 items-center">
-            <div className="p-2 bg-zinc-100 rounded-xl flex-none">
-              <Building className="w-5 h-5 text-zinc-700" />
+            <div className="p-1.5 sm:p-2 bg-zinc-100 rounded-xl flex-none">
+              <Building className="w-4 sm:w-5 h-4 sm:h-5 text-zinc-700" />
             </div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-medium text-zinc-900 line-clamp-1">
-                {location.serviceCenter}
-              </h3>
-            </div>
+            <h1 className="font-medium text-zinc-900 text-sm sm:text-base line-clamp-1 max-w-[200px] sm:max-w-[300px]">
+              {location.serviceCenter}
+            </h1>
           </div>
           <span
-            className={`px-2 py-1 font-medium rounded-full whitespace-nowrap text-sm flex items-center ${
+            className={`px-2 py-1 font-medium rounded-full whitespace-nowrap text-xs sm:text-sm
+            flex items-center ${
               location.status === "OPERATIVO"
                 ? "bg-emerald-100 text-emerald-500"
                 : "bg-red-100 text-red-500"
             }`}
           >
             {location.status === "OPERATIVO" ? "Operativo" : "No operativo"}
-
-            {location.status === "OPERATIVO" ? (
-              <Zap className="w-4 h-4 ml-1 text-emerald-500" />
-            ) : (
-              <Zap className="w-4 h-4 ml-1 text-red-500" />
-            )}
+            <Zap
+              className={`w-3 sm:w-4 h-3 sm:h-4 ml-1
+              ${
+                location.status === "OPERATIVO"
+                  ? "text-emerald-500"
+                  : "text-red-500"
+              }`}
+            />
           </span>
         </div>
-      </div>
+      </header>
 
-      {/* Card Body - Updated to flex-grow */}
-      <div
-        className="flex-1 overflow-y-auto min-h-0 p-4 scroll-smooth
-        scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent hover:scrollbar-thumb-zinc-400
-        scrollbar-thumb-rounded-full scrollbar-track-rounded-full
-        [&::-webkit-scrollbar]:w-2
-        [&::-webkit-scrollbar-track]:bg-transparent
-        [&::-webkit-scrollbar-thumb]:bg-zinc-300/50
-        [&::-webkit-scrollbar-thumb]:rounded-full
-        [&::-webkit-scrollbar-thumb]:border-4
-        [&::-webkit-scrollbar-thumb]:border-transparent
-        [&::-webkit-scrollbar-thumb]:bg-clip-padding
-        [&::-webkit-scrollbar-thumb]:hover:bg-zinc-400/50"
+      <main
+        className="flex-1 overflow-y-auto min-h-0 p-3 sm:p-4 scroll-smooth
+        scrollbar-thin scrollbar-thumb-rounded-full"
       >
-        {/* Location Section */}
-        <div className="flex flex-col space-y-2 px-3 py-2 bg-zinc-50/50 rounded-xl mb-4">
+        <section className="flex flex-col space-y-2 px-3 py-2 bg-zinc-50/50 rounded-xl mb-3 sm:mb-4">
           <p className="flex items-center gap-2 text-sm text-zinc-700">
             <Globe2 className="w-4 h-4 text-zinc-500" />
             <span className="font-medium">
@@ -121,11 +139,9 @@ const LocationCard = ({ location }: LocationCardProps) => {
             <Home className="w-4 h-4 text-zinc-500" />
             <span>{toSentenceCase(location.district)}</span>
           </p>
-        </div>
+        </section>
 
-        {/* Address and Hours Section */}
         <div className="flex flex-col space-y-3 mb-4">
-          {/* Address Card */}
           <div className="flex items-start gap-3 p-3 bg-zinc-50/50 rounded-xl">
             <MapPin className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-1" />
             <div>
@@ -138,7 +154,6 @@ const LocationCard = ({ location }: LocationCardProps) => {
             </div>
           </div>
 
-          {/* Hours Card */}
           <div className="flex items-start gap-3 p-3 bg-zinc-50/50 rounded-xl">
             <Clock className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-1" />
             <div>
@@ -152,9 +167,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
           </div>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {/* DNI Services */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="p-3 rounded-2xl border border-zinc-100 bg-white">
             <div className="flex items-center gap-2 mb-2">
               <IdCard className="w-4 h-4 text-zinc-500" />
@@ -186,7 +199,6 @@ const LocationCard = ({ location }: LocationCardProps) => {
             </ul>
           </div>
 
-          {/* Civil Records */}
           <div className="p-3 rounded-2xl border border-zinc-100 bg-white">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-zinc-500" />
@@ -218,28 +230,29 @@ const LocationCard = ({ location }: LocationCardProps) => {
             </ul>
           </div>
         </div>
-      </div>
+      </main>
 
-      {/* Footer - Updated to flex-none */}
-      <div className="flex-none bg-white/95 backdrop-blur-md border-t border-zinc-100">
+      <footer className="flex-none bg-white/95 backdrop-blur-md border-t border-zinc-100">
         <a
           href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group"
+          className="flex items-center justify-between p-3 sm:p-4 hover:bg-zinc-50
+          transition-colors group"
+          aria-label="Ver ubicación en Google Maps"
         >
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-zinc-100 rounded-xl">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-zinc-100 rounded-xl">
               <MapPin className="w-4 h-4 text-zinc-600" />
             </div>
-            <span className="text-sm font-medium text-zinc-700">
+            <span className="text-xs sm:text-sm font-medium text-zinc-700">
               Ver ubicación en Google Maps
             </span>
           </div>
           <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
         </a>
-      </div>
-    </div>
+      </footer>
+    </aside>
   );
 };
 
