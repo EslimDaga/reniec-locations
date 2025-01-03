@@ -32,7 +32,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
         role="complementary"
         aria-label="Location selector"
       >
-        <div className="px-4 sm:px-6 py-6 sm:py-8 text-center">
+        <div className="px-4 sm:px-4 py-4 sm:py-4 text-center">
           <div className="relative mb-4 sm:mb-6">
             <div
               className="absolute -top-2 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-24 sm:h-32
@@ -72,13 +72,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
   return (
     <aside
       className={`
-        fixed sm:bottom-4 left-1/2 -translate-x-1/2
-        w-full sm:w-[min(480px,90vw)]
-        max-h-[15dvh] sm:max-h-[45vh] min-h-[40dvh] sm:min-h-0
-        bg-white/95 rounded-t-2xl sm:rounded-3xl
-        shadow-2xl border border-zinc-200/50 backdrop-blur-md
-        overflow-hidden z-50 flex flex-col
-        transition-all duration-300 ease-out
+        fixed sm:bottom-4 left-1/2 -translate-x-1/2 w-full sm:w-[min(480px,90vw)] max-h-[15dvh] sm:max-h-[45vh] min-h-[40dvh] sm:min-h-0 bg-white/95 rounded-t-2xl sm:rounded-3xl shadow-2xl border border-zinc-200/50 backdrop-blur-md overflow-hidden z-50 flex flex-col transition-all duration-300 ease-out
         ${
           location
             ? "translate-y-0 bottom-0"
@@ -88,10 +82,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
       role="complementary"
       aria-label="Location details"
     >
-      <header
-        className="flex-none sticky top-0 bg-white/95 backdrop-blur-md
-        border-b border-zinc-100/50 flex items-center justify-between p-3 sm:p-4"
-      >
+      <header className="flex-none sticky top-0 bg-white/95 backdrop-blur-md border-b border-zinc-100/50 flex items-center justify-between p-3 sm:p-4">
         <div className="flex items-center gap-2 sm:gap-3 justify-between w-full">
           <div className="flex gap-2 items-center">
             <div className="p-1.5 sm:p-2 bg-zinc-100 rounded-xl flex-none">
@@ -122,10 +113,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
         </div>
       </header>
 
-      <main
-        className="flex-1 overflow-y-auto min-h-0 p-3 sm:p-4 scroll-smooth
-        scrollbar-thin scrollbar-thumb-rounded-full"
-      >
+      <main className="flex-1 overflow-y-auto min-h-0 p-3 sm:p-4 scroll-smoot scrollbar-thin scrollbar-track-transparent scrollbar-thumb-zinc-300/50 hover:scrollbar-thumb-zinc-400/50 scrollbar-thumb-rounded-full">
         <section className="flex flex-col space-y-2 px-3 py-2 bg-zinc-50/50 rounded-xl mb-3 sm:mb-4">
           <p className="flex items-center gap-2 text-sm text-zinc-700">
             <Globe2 className="w-4 h-4 text-zinc-500" />

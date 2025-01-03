@@ -15,5 +15,5 @@ export default {
       },
     },
   },
-  plugins: [scrollbar],
+  plugins: [scrollbar({ nocompatible: true })],
 } satisfies Config;
