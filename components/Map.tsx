@@ -63,6 +63,19 @@ export default function Map({
         },
       });
 
+      // Add invisible larger hitbox layer
+      map.addLayer({
+        id: "location-points-hitbox",
+        type: "circle",
+        source: "locations",
+        paint: {
+          "circle-radius": 15, // Larger invisible hitbox
+          "circle-color": "#000000",
+          "circle-opacity": 0,
+        },
+      });
+
+      // Keep original visual layers
       map.addLayer({
         id: "location-points-base",
         type: "circle",
@@ -129,7 +142,8 @@ export default function Map({
       let hoveredStateId: string | null = null;
       let selectedStateId: string | null = null;
 
-      map.on("mousemove", "location-points-base", (e) => {
+      // Update event listeners to use hitbox layer
+      map.on("mousemove", "location-points-hitbox", (e) => {
         if (e.features?.length && e.features[0].id) {
           if (hoveredStateId) {
             map.setFeatureState(
@@ -146,7 +160,7 @@ export default function Map({
         }
       });
 
-      map.on("mouseleave", "location-points-base", () => {
+      map.on("mouseleave", "location-points-hitbox", () => {
         if (hoveredStateId) {
           map.setFeatureState(
             { source: "locations", id: hoveredStateId },
@@ -157,7 +171,7 @@ export default function Map({
         }
       });
 
-      map.on("click", "location-points-base", (e) => {
+      map.on("click", "location-points-hitbox", (e) => {
         if (e.features?.length) {
           const location = e.features[0].properties as Location;
           const clickedId = e.features[0].id as string;
