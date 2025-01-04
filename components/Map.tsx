@@ -64,13 +64,12 @@ export default function Map({
         },
       });
 
-      // Add invisible larger hitbox layer
       map.addLayer({
         id: "location-points-hitbox",
         type: "circle",
         source: "locations",
         paint: {
-          "circle-radius": 15, // Larger invisible hitbox
+          "circle-radius": 15,
           "circle-color": "#000000",
           "circle-opacity": [
             "case",
@@ -81,7 +80,6 @@ export default function Map({
         },
       });
 
-      // Keep original visual layers
       map.addLayer({
         id: "location-points-base",
         type: "circle",
@@ -158,7 +156,6 @@ export default function Map({
       let hoveredStateId: string | null = null;
       let selectedStateId: string | null = null;
 
-      // Update event listeners to use hitbox layer
       map.on("mousemove", "location-points-hitbox", (e) => {
         if (e.features?.length && e.features[0].id) {
           if (hoveredStateId) {
@@ -285,7 +282,6 @@ export default function Map({
     (department: string | null) => {
       if (!map.current) return;
 
-      // Reset selection when changing departments
       if (
         selectedLocation &&
         department &&
@@ -294,7 +290,6 @@ export default function Map({
         setSelectedLocation(null);
       }
 
-      // Update feature states efficiently
       locations.forEach((location) => {
         map.current?.setFeatureState(
           { source: "locations", id: location.id },
@@ -305,7 +300,6 @@ export default function Map({
         );
       });
 
-      // Adjust map view with proper bounds
       if (!department) {
         map.current.flyTo({
           center: PERU_CENTER,
