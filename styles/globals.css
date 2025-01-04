@@ -107,6 +107,38 @@ body {
   }
 }
 
+@keyframes locationPing {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.location-marker-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-marker-ring {
+  position: absolute;
+  inset: -16px;
+  border-radius: 9999px;
+  background-color: rgba(16, 185, 129, 0.3);
+  animation: locationPing 3s ease-in-out infinite;
+}
+
+.location-marker-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: rgb(16, 185, 129);
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5);
+}
+
 .animate-fade-up {
   animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

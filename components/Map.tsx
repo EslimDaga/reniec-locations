@@ -225,16 +225,14 @@ export default function Map({
 
   const createCustomMarker = useCallback((coordinates: [number, number]) => {
     const markerElement = document.createElement("div");
-    markerElement.className = "relative flex items-center justify-center";
+    markerElement.className = "location-marker-container";
 
     const ring = document.createElement("div");
-    ring.className =
-      "absolute -inset-4 rounded-full bg-emerald-500/30 animate-[ping_3s_ease-in-out_infinite]";
+    ring.className = "location-marker-ring";
     markerElement.appendChild(ring);
 
     const dot = document.createElement("div");
-    dot.className =
-      "absolute w-4 h-4 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50";
+    dot.className = "location-marker-dot";
     markerElement.appendChild(dot);
 
     if (userLocationMarker.current) {
