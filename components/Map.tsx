@@ -248,7 +248,7 @@ export default function Map({
 
     map.current?.flyTo({
       center: coordinates,
-      zoom: 15,
+      zoom: 12,
       duration: 2000,
     });
   }, []);
