@@ -33,6 +33,18 @@ const LocationCard = ({ location }: LocationCardProps) => {
         aria-label="Location selector"
       >
         <div className="px-4 sm:px-4 py-4 sm:py-4 text-center">
+          <a
+            href="https://github.com/EslimDaga/reniec-locations"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 py-2.5 px-4
+            text-xs text-zinc-800 hover:text-zinc-700 transition-colors
+            bg-gradient-to-r from-pink-50 via-purple-50 to-indigo-50 rounded-xl"
+          >
+            <span className="animate-bounce inline-block">✨</span>
+            <span className="font-medium"> Made with magic by Eslim</span>
+            <span className="animate-bounce inline-block">🦄</span>
+          </a>
           <div className="relative mb-4 sm:mb-6">
             <div
               className="absolute -top-2 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-24 sm:h-32
@@ -242,10 +254,9 @@ const LocationCard = ({ location }: LocationCardProps) => {
           <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
         </a>
 
-        {/* Add signature section */}
         <div className="border-t border-zinc-100">
           <a
-            href="https://github.com/eslimdev"
+            href="https://github.com/EslimDaga/reniec-locations"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 py-2.5 px-4
