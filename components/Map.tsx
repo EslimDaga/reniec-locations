@@ -250,7 +250,6 @@ export default function Map({
       center: coordinates,
       zoom: 15,
       duration: 2000,
-      essential: true,
     });
   }, []);
 
