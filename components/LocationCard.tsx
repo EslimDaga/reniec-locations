@@ -241,6 +241,22 @@ const LocationCard = ({ location }: LocationCardProps) => {
           </div>
           <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
         </a>
+
+        {/* Add signature section */}
+        <div className="border-t border-zinc-100">
+          <a
+            href="https://github.com/eslimdev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 py-2.5 px-4
+            text-xs text-zinc-800 hover:text-zinc-700 transition-colors
+            bg-gradient-to-r from-pink-50 via-purple-50 to-indigo-50"
+          >
+            <span className="animate-bounce inline-block">✨</span>
+            <span className="font-medium"> Made with magic by Eslim</span>
+            <span className="animate-bounce inline-block">🦄</span>
+          </a>
+        </div>
       </footer>
     </aside>
   );
