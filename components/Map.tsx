@@ -2,8 +2,9 @@
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { DepartmentFilter } from "./DepartmentFilter";
 import { Location } from "@/types/location";
 import LocationCard from "./LocationCard";
 import mapboxgl from "mapbox-gl";
@@ -71,7 +72,12 @@ export default function Map({
         paint: {
           "circle-radius": 15, // Larger invisible hitbox
           "circle-color": "#000000",
-          "circle-opacity": 0,
+          "circle-opacity": [
+            "case",
+            ["boolean", ["feature-state", "visible"], true],
+            0,
+            0,
+          ],
         },
       });
 
@@ -90,13 +96,18 @@ export default function Map({
           "circle-radius": 3.5,
           "circle-opacity": [
             "case",
+            ["boolean", ["feature-state", "visible"], true],
             [
-              "any",
-              ["boolean", ["feature-state", "hover"], false],
-              ["boolean", ["feature-state", "selected"], false],
+              "case",
+              [
+                "any",
+                ["boolean", ["feature-state", "hover"], false],
+                ["boolean", ["feature-state", "selected"], false],
+              ],
+              1,
+              0.75,
             ],
-            1,
-            0.75,
+            0,
           ],
         },
       });
@@ -115,10 +126,15 @@ export default function Map({
           ],
           "circle-opacity": [
             "case",
-            ["boolean", ["feature-state", "hover"], false],
-            0.15,
-            ["boolean", ["feature-state", "selected"], false],
-            0.1,
+            ["boolean", ["feature-state", "visible"], true],
+            [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              0.15,
+              ["boolean", ["feature-state", "selected"], false],
+              0.1,
+              0,
+            ],
             0,
           ],
           "circle-stroke-width": [
@@ -254,6 +270,72 @@ export default function Map({
     [createCustomMarker]
   );
 
+  const { departments } = useMemo(() => {
+    const uniqueDepartments = Array.from(
+      new Set(locations.map((loc) => loc.department))
+    ).sort();
+
+    return {
+      departments: uniqueDepartments,
+      visibleLocations: locations,
+    };
+  }, [locations]);
+
+  const handleDepartmentSelect = useCallback(
+    (department: string | null) => {
+      if (!map.current) return;
+
+      // Reset selection when changing departments
+      if (
+        selectedLocation &&
+        department &&
+        selectedLocation.department !== department
+      ) {
+        setSelectedLocation(null);
+      }
+
+      // Update feature states efficiently
+      locations.forEach((location) => {
+        map.current?.setFeatureState(
+          { source: "locations", id: location.id },
+          {
+            visible: department ? location.department === department : true,
+            selected: false,
+          }
+        );
+      });
+
+      // Adjust map view with proper bounds
+      if (!department) {
+        map.current.flyTo({
+          center: PERU_CENTER,
+          zoom: INITIAL_ZOOM,
+          duration: 1500,
+          essential: true,
+        });
+        return;
+      }
+
+      const departmentLocations = locations.filter(
+        (loc) => loc.department === department
+      );
+
+      if (departmentLocations.length === 0) return;
+
+      const bounds = new mapboxgl.LngLatBounds();
+      departmentLocations.forEach((location) => {
+        bounds.extend([location.longitude, location.latitude]);
+      });
+
+      map.current.fitBounds(bounds, {
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        duration: 1500,
+        essential: true,
+      });
+    },
+    [locations, selectedLocation]
+  );
+
   useEffect(() => {
     if (!mapContainer.current || !locations.length) return;
 
@@ -305,6 +387,10 @@ export default function Map({
 
   return (
     <div className="relative h-screen w-full">
+      <DepartmentFilter
+        departments={departments}
+        onSelect={handleDepartmentSelect}
+      />
       <div
         ref={mapContainer}
         className={`h-full w-full pb-[35dvh] sm:pb-0 ${className}`}

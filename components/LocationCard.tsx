@@ -28,7 +28,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
       <aside
         className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[min(420px,90vw)]
         bg-white/90 rounded-3xl shadow-lg border border-zinc-100/30
-        backdrop-blur-xl overflow-hidden z-50 animate-float"
+        backdrop-blur-xl overflow-hidden z-30 animate-float"
         role="complementary"
         aria-label="Location selector"
       >
