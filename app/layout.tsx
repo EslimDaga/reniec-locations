@@ -9,7 +9,7 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: "RENIEC - Oficinas 📍",
+  title: "Reniec - Oficinas 📍",
   description: "Encuentra la oficina RENIEC más cercana a tu ubicación",
 };
 
