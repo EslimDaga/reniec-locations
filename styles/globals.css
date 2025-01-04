@@ -57,7 +57,7 @@ body {
 }
 
 .mapboxgl-marker {
-  @apply transition-transform duration-200 hover:bg-red-500;
+  @apply transition-transform duration-200;
 }
 
 .mapboxgl-marker {
